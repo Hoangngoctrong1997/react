@@ -24,9 +24,9 @@ function App() {
     if (findName.trim() === "") {
       setFilteredProduct(product);
     } else {
-      let found = product.find(item => item.name.toLowerCase() === findName.toLowerCase());
+      let found = product.filter(item => item.name.toLowerCase().includes(findName.toLowerCase()));
       if (found) {
-        setFilteredProduct([found]);
+        setFilteredProduct(found);
       } else {
         setFilteredProduct([]);
       }
