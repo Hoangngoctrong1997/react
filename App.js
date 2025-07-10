@@ -1,151 +1,172 @@
-import logo from './logo.svg';
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function App() {
-  let [a, setA] = useState(false);
-  let [b, setB] = useState(false);
-  let [flag, setFlag] = useState(false);
-  let [newName, setNewName] = useState("");
-  let [newPrice, setNewPrice] = useState(0);
-  let [newQuantity, setNewQuantity] = useState(0);
-  let [editName, setEditName] = useState("");
-  let [editPrice, setEditPrice] = useState(0);
-  let [editQuantity, setEditQuantity] = useState(0);
-  let [product, setProduct] = useState([
-    { name: "IP1", price: 1000, quantity: 5000 },
-    { name: "IP2", price: 2000, quantity: 6000 },
-    { name: "IP3", price: 3000, quantity: 7000 },
+  let [student, setstudent] = useState([
+    {
+      studentname: "Nguyễn Văn A",
+      age: 16,
+      class: "11A1",
+      score: 8.5
+    },
+    {
+      studentname: "Trần Thị B",
+      age: 17,
+      class: "B",
+      score: 9.0
+    },
+    {
+      studentname: "Lê Văn C",
+      age: 15,
+      class: "C",
+      score: 7.8
+    },
+    {
+      studentname: "Phạm Thị D",
+      age: 16,
+      class: "A",
+      score: 8.2
+    }
   ]);
-
-  let [filteredProduct, setFilteredProduct] = useState(product);
-  let [findName, setFindName] = useState("");
-  let [indexEdit, setIndexEdit] = useState(0);
-  let sortDescending = (arr,flag) => {
-    if(flag){
-      return arr.sort((a, b) => b.price - a.price);
-    }else{
-      return arr.sort((a, b) => a.price - b.price);
+  let [studentNameEdit,setStudentNameEdit] = useState("");
+  let [ageEdit,setAgeEdit] = useState("");
+  let [classEdit,setClassEdit] = useState("");
+  let [scoreEdit,setScoreEdit] = useState("");
+  let [classList,setClassList] = useState(["A","B","C"]);
+  let [a,setA] = useState(false);
+  let [b,setB] = useState(false);
+  let [addname,setAddname] = useState("");
+  let [addage,setAddage] = useState("");
+  let [addclass,setAddclass] = useState("A");
+  let [addscore,setAddscore] = useState("");
+  let [nameSearch , setNameSearch] = useState("");
+  let [curentIndex , setCurentIndex] = useState("");
+  let handleAddStudent = ()=>{
+    let curentSudent = {
+      studentname : addname,
+      age : Number(addage),
+      class : addclass,
+      score : Number(addscore),
     }
-  };
-  let handleSort = ()=>{
-    setFlag(!flag);
-  }
-  useEffect(() => {
-    if (findName.trim() === "") {
-      setFilteredProduct(product);
-    } else {
-      let found = product.filter(item => item.name.toLowerCase().includes(findName.toLowerCase()));
-      if (found) {
-        setFilteredProduct(found);
-      } else {
-        setFilteredProduct([]);
-      }
+    if(addname!=""){
+   setstudent([...student,curentSudent])
+   setA(!a);
+   setAddname("");
+   setAddage("");
+   setAddscore("");
+   setAddclass("A");
     }
-  }, [findName, product]);
-
-  let handleAddProduct = () => {
-    let newItem = { name: newName, price: Number(newPrice), quantity: Number(newQuantity) };
-    let updated = [...product, newItem];
-    setProduct(updated);
-    setFilteredProduct(updated);
-    setA(false);
-  };
-let deleteProduct = (itemToDelete) => {
-  const indexInProduct = product.findIndex(
-    p =>
-      p.name === itemToDelete.name &&
-      p.price === itemToDelete.price &&
-      p.quantity === itemToDelete.quantity
-  );
-
-  if (indexInProduct !== -1) {
-    const newProduct = [...product];
-    newProduct.splice(indexInProduct, 1);
-    setProduct(newProduct);
-    setFilteredProduct(newProduct);
+    
   }
-};
-let editProduct = (item, indexInFiltered) => {
-  const indexInFullProduct = product.findIndex(p => p.name === item.name && p.price === item.price && p.quantity === item.quantity);
-  setIndexEdit(indexInFullProduct);
-  setEditName(item.name);
-  setEditPrice(item.price);
-  setEditQuantity(item.quantity);
-  setB(true);
-};
-  let handleEditProduct =()=>{
-      let updated =[...product];
-        updated[indexEdit] = {
-        name: editName,
-        price: editPrice,
-        quantity: editQuantity
-  };
-       setProduct(updated);
-       setFilteredProduct(updated);
-       setB(false);
-      
+  let editStudent = (item,index)=>{
+    setCurentIndex(index);
+    setB(true);
+    setStudentNameEdit(item.studentname);
+    setAgeEdit(item.age);
+    setClassEdit(item.class);
+    setScoreEdit(item.score)
   }
-  let sortedProduct = sortDescending([...filteredProduct],flag);
+  let handleEditStudent =()=>{
+    let y = [...student];
+    y[curentIndex]= {
+      studentname:studentNameEdit,
+      age: ageEdit,
+      class:classEdit,
+      score:scoreEdit};
+      setstudent(...y);
+      setB(!b)
+  }
+  let deleteStudent =(index)=>{
+    let newList = student.filter((_, i) => i !== index);
+    setstudent(newList);
 
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <div>
-          <input
-            type="text"
-            placeholder="Tìm sản phẩm"
-            onChange={(e) => setFindName(e.target.value)}
-          />
-        </div>
-
-        {a ?(
+      <h1>Danh sách lớp</h1>
+      <table border="1" cellPadding="8">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Lớp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {classList.map((ls , index)=>(
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{ls}</td>
+            </tr>
+        ))}
+        </tbody>
+      </table>
+      <h1>Danh sách học sinh</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Tìm học sinh"
+          onChange={(e) => setNameSearch(e.target.value)}
+        />
+      </div>
+      <table border="1" cellPadding="8">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Tuổi</th>
+            <th>Lớp</th>
+            <th>Điểm</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {student.filter((item=>item.studentname.toLowerCase().includes(nameSearch.toLowerCase()))).map((hs, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{hs.studentname}</td>
+              <td>{hs.age}</td>
+              <td>{hs.class}</td>
+              <td>{hs.score}</td>
+              <td><button onClick={() => editStudent(hs,index)}>Sửa</button><button onClick={() => deleteStudent(index)}>Xóa</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+        {b ?(
           <div>
-            <input type="text" placeholder="Tên" onChange={(e) => setNewName(e.target.value)} />
-            <input type="number" placeholder="Giá" onChange={(e) => setNewPrice(e.target.value)} />
-            <input type="number" placeholder="Số lượng" onChange={(e) => setNewQuantity(e.target.value)} />
-            <button onClick={handleAddProduct}>Thêm</button>
+            <input type="text" value={studentNameEdit} onChange={(e) =>setStudentNameEdit(e.target.value)} />
+            <input type="number" value={ageEdit} onChange={(e) => setAgeEdit(e.target.value)} />
+            <input type="number"value={scoreEdit} onChange={(e) => setScoreEdit(e.target.value)} />
+            <select onChange={(e)=>{setClassEdit(e.target.value)}}>
+                {
+                    classList.map((y, index) => (
+                        <option value={y} key={index}>
+                            {y}
+                        </option>
+                    ))
+                }
+            </select>
+            <button onClick={handleEditStudent}>Xong</button>
           </div>
         ):""}
-          {b ?(
+      {a ?(
           <div>
-            <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} />
-            <input type="number" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} />
-            <input type="number" value={editQuantity} onChange={(e) => setEditQuantity(e.target.value)} />
-            <button onClick={handleEditProduct}>Xong</button>
+            <input type="text" placeholder='Tên' value={addname} onChange={(e) => setAddname(e.target.value)} />
+            <input type="number" placeholder='điểm' value={addscore} onChange={(e) => setAddscore(e.target.value)} />
+            <input type="number" placeholder='tuổi' value={addage} onChange={(e) => setAddage(e.target.value)} />
+            <select onChange={(e)=>{setAddclass(e.target.value)}}>
+                {
+                    classList.map((y, index) => (
+                        <option value={y} key={index}>
+                            {y}
+                        </option>
+                    ))
+                }
+            </select>
+            <button onClick={handleAddStudent}>Xong</button>
           </div>
         ):""}
-
-        <div>
-          <div>Danh sách sản phẩm</div>
-              <table border="1" cellpadding="10" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>Tên</th>
-                  <th><span>Giá</span>
-                  <button onClick={handleSort} className="sortButton">{flag ? "↑" : "↓"}</button>
-                  </th>
-                  <th>Số lượng</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedProduct.length > 0 ? (sortedProduct.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.name}</td>
-                    <td>{item.price}</td>
-                    <td>{item.quantity}</td>
-                    <td><button onClick={() => editProduct(item, index)}>Sửa</button><button onClick={() => deleteProduct(item)}>Xóa</button></td>
-                  </tr>
-                  ))) : (<tr>
-                          <td colSpan="4">Không tìm thấy sản phẩm</td>
-                         </tr>
-                        )}
-              </tbody>
-            </table>
-        </div>
-        <button onClick={() => setA(!a)}>{a ? "Hủy" : "Thêm sản phẩm"}</button>
-      </header>
+      <button onClick={() => setA(!a)}>{a ? "Hủy" : "Thêm học sinh"}</button>
     </div>
   );
 }
